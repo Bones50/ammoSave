@@ -1,29 +1,3 @@
-/*
-© 2015 Zenix Gaming Ops
-Developed by Rod-Serling
-Co-Developed by Vishpala
-
-All rights reserved.
-
-Function:
-	AVS_fnc_getVehicleLoadout - Gets the current loadout of the vehicle.
-
-Usage:
-	_vehicle call AVS_fnc_getVehicleLoadout;
-
-Return Value:
-	Loadout of the vehicle in the format:
-	[
-		[_turretPath, [_magazineClassName, _totalAmmo], [_magazineClassName2, _totalAmmo]],
-		[_turretPath2, [_magazineClassName3, _totalAmmo], [_magazineClassName4, _totalAmmo]],
-	]
-
-Notes:
-	The return value will only specify a single magazine class name for each magazine class in a turret. For example, an armed offroad will return:
-	[
-		[[0], ["100Rnd_127x99_mag_Tracer_Yellow", 400]]
-	];
-*/
 private ["_currentLoadout", "_magClass", "_turretPath", "_ammoCount", "_inserted", "_magInserted", "_magData"];
 _OK = params
 [
