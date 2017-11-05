@@ -10,6 +10,7 @@ Install:
 3. Replace the exile.ini file (exilsever\extDB) on your server with the provided one, or merge if you have changed it for other scripts.
 4. Download your mission file from the server and un-PBO it.
 5. Create a folder called Custom\ammoSave in your mission PBO (you can change the location but will need to redo all the scripts to use the new location).
+5. copy the files in the comparable folder from this repo into the newly created folder.
 6. Open config.cpp in your mission file and add the following under "class CfgExileCustomCode"
 	ExileServer_object_vehicle_database_update = "Custom\ammoSave\ExileServer_object_vehicle_database_update.sqf";
 	ExileServer_object_vehicle_database_load = "Custom\ammoSave\ExileServer_object_vehicle_database_load.sqf";
