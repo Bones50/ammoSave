@@ -9,7 +9,7 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
  */
  
-private["_vehicleObject","_vehicleID","_position","_vectorDirection","_vectorUp","_availableHitpoints","_vehicleHitpoints","_data","_extDB2Message","_currentLoadout", "_magClass", "_turretPath", "_ammoCount", "_inserted", "_magInserted", "_magData"];
+private["_vehicleObject", "_vehicleID", "_position", "_vectorDirection", "_vectorUp", "_availableHitpoints", "_vehicleHitpoints", "_data", "_extDB2Message"];
 _vehicleObject = _this;
 _vehicleID = _vehicleObject getVariable ["ExileDatabaseID", -1];
 if (_vehicleID > -1) then
@@ -48,13 +48,14 @@ if (_vehicleID > -1) then
 		_vehicleObject getVariable ["ExileMoney", 0],
 		_vehicleID 
 	];
-
 	_extDB2Message = ["updateVehicle", _data] call ExileServer_util_extDB2_createMessage;
-	_extDB2Message call ExileServer_system_database_query_fireAndForget;	
-
-	_currentLoadout = _vehicle call Bones_fnc_getVehicleLoadout;
+	_extDB2Message call ExileServer_system_database_query_fireAndForget;
+	
+	//Bones custoM Ammosave
+	_currentLoadout = _vehicleObject call Bones_fnc_getVehicleLoadout;
 
 	_extDB2Message = ["setVehicleAmmo", [_currentLoadout, _vehicleID]] call ExileServer_util_extDB2_createMessage;
 	_extDB2Message call ExileServer_system_database_query_fireAndForget;
+	//End Custom
 };
 true
