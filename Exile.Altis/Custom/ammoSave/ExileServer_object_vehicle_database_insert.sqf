@@ -9,7 +9,7 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
  */
  
-private["_vehicleObject","_position","_vectorDirection","_vectorUp","_data","_extDB2Message","_vehicleID"];
+private["_vehicleObject", "_position", "_vectorDirection", "_vectorUp", "_data", "_extDB2Message", "_vehicleID", "_currentLoadout", "_extDB2Message2"];
 _vehicleObject = _this;
 _position = getPosATL _vehicleObject;
 _vectorDirection = vectorDir _vehicleObject;
@@ -30,14 +30,11 @@ _data =
 	_vectorUp select 2,
 	_vehicleObject getVariable ["ExileAccessCode",""]
 ];
-_currentLoadout = _vehicleObject call Bones_fnc_getVehicleLoadout;
-
-_extDB2Message = ["setVehicleAmmo", [_currentLoadout, _vehicleID]] call ExileServer_util_extDB2_createMessage;
-_extDB2Message call ExileServer_system_database_query_insertSingle;
-
 _extDB2Message = ["insertVehicle", _data] call ExileServer_util_extDB2_createMessage;
 _vehicleID = _extDB2Message call ExileServer_system_database_query_insertSingle;
 _vehicleObject setVariable["ExileDatabaseID", _vehicleID];
 _vehicleObject setVariable["ExileIsPersistent", true];
+_currentLoadout = _vehicleObject call Bones_fnc_getVehicleLoadout;
+_extDB2Message2 = ["setVehicleAmmo", [_currentLoadout, _vehicleID]] call ExileServer_util_extDB2_createMessage;
+_extDB2Message2 call ExileServer_system_database_query_insertSingle;
 _vehicleID
-
