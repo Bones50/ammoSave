@@ -9,7 +9,7 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
  */
  
-private["_vehicleObject", "_vehicleID", "_position", "_vectorDirection", "_vectorUp", "_availableHitpoints", "_vehicleHitpoints", "_data", "_extDB2Message"];
+private["_currentLoadout", "_vehicleObject", "_vehicleID", "_position", "_vectorDirection", "_vectorUp", "_availableHitpoints", "_vehicleHitpoints", "_data", "_extDB2Message"];
 _vehicleObject = _this;
 _vehicleID = _vehicleObject getVariable ["ExileDatabaseID", -1];
 if (_vehicleID > -1) then
