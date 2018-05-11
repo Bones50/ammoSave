@@ -127,7 +127,7 @@ if (typeName _savedMagazines isEqualTo "ARRAY") then
 				_magData = _x select _i;
 				_magClass = _magData select 0;
 				_ammoCount = _magData select 1;
-				if (["120mm",_magClass] call BIS_fnc_inString || ["125mm",_magClass] call BIS_fnc_inString) then
+				if (["120mm",_magClass] call BIS_fnc_inString || ["125mm",_magClass] call BIS_fnc_inString || ["105mm",_magClass] call BIS_fnc_inString || ["L30A1_Cannon",_magClass] call BIS_fnc_inString || ["2A46",_magClass] call BIS_fnc_inString || ["100mm",_magClass] call BIS_fnc_inString) then
 				{
 					_vehicleobject addMagazineTurret [_magClass,_turretPath,_ammoCount];
 				}
