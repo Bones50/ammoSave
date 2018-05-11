@@ -98,7 +98,14 @@ if !(_texture isEqualTo "") then
 	forEach _texture;
 };
 _vehicleObject enableSimulationGlobal false;
-_vehicleObject call ExileServer_system_simulationMonitor_addVehicle;
+if (getNumber(missionConfigFile >> "CfgSimulation" >> "enableDynamicSimulation") isEqualTo 1) then 
+{
+	_vehicleObject enableDynamicSimulation true;
+}
+else
+{
+	_vehicleObject call ExileServer_system_simulationMonitor_addVehicle;
+};
 if (_vehicleObject call ExileClient_util_world_isInTraderZone) then 
 {
 	_vehicleObject allowDamage false;
@@ -115,23 +122,28 @@ if (typeName _savedMagazines isEqualTo "ARRAY") then
 	{
 		{
 			_turretPath = _x select 0;
-	
 			for "_i" from (count _x - 1) to 1 step -1 do
 			{
 				_magData = _x select _i;
 				_magClass = _magData select 0;
 				_ammoCount = _magData select 1;
-	
-				_maxMagAmmo = (configFile >> "CfgMagazines" >> _magClass >> "count") call BIS_fnc_getCfgData;
-				_numMags = ceil (_ammoCount / _maxMagAmmo);
-	
-				while {_numMags > 1} do
+				if (["120mm",_magClass] call BIS_fnc_inString || ["125mm",_magClass] call BIS_fnc_inString) then
 				{
-					_vehicleobject addMagazineTurret [_magClass, _turretPath];
-					_numMags = _numMags - 1;
-					_ammoCount = _ammoCount - _maxMagAmmo;
+					_vehicleobject addMagazineTurret [_magClass,_turretPath,_ammoCount];
+				}
+				else
+				{
+					_maxMagAmmo = (configFile >> "CfgMagazines" >> _magClass >> "count") call BIS_fnc_getCfgData;
+					_numMags = ceil (_ammoCount / _maxMagAmmo);
+		
+					while {_numMags > 1} do
+					{
+						_vehicleobject addMagazineTurret [_magClass, _turretPath];
+						_numMags = _numMags - 1;
+						_ammoCount = _ammoCount - _maxMagAmmo;
+					};
+					_vehicleobject setMagazineTurretAmmo [_magClass, _ammoCount, _turretPath];			
 				};
-				_vehicleobject setMagazineTurretAmmo [_magClass, _ammoCount, _turretPath];
 			};
 		} forEach _savedMagazines;
 	};
