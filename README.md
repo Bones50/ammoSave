@@ -15,7 +15,6 @@ Install:
 	ExileServer_object_vehicle_database_update = "Custom\ammoSave\ExileServer_object_vehicle_database_update.sqf";
 	ExileServer_object_vehicle_database_load = "Custom\ammoSave\ExileServer_object_vehicle_database_load.sqf";
 	ExileServer_object_vehicle_database_insert = "Custom\ammoSave\ExileServer_object_vehicle_database_insert.sqf";
-	ExileServer_object_vehicle_carefulCreateVehicle = "Custom\ammoSave\ExileServer_object_vehicle_carefulCreateVehicle.sqf";
 7. If you don't have an init.sqf file in your mission copy the provided one into the root fold of the mission. If you do copy the contents of the provided file and add it.  
 8. re-PBO and push edited mission file to your server.
 9. Restart the server.... profit!!
