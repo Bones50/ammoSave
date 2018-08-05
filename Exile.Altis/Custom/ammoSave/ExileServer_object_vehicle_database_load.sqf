@@ -110,49 +110,66 @@ if (_vehicleObject call ExileClient_util_world_isInTraderZone) then
 {
 	_vehicleObject allowDamage false;
 };
+
 //Bones Ammo Save Addition
 _query = format["getVehicleAmmo:%1", _vehicleID] call ExileServer_system_database_query_selectSingle;
 _savedMagazines = _query select 0;
 
-_vehicleobject setVehicleAmmoDef 0;
+_vehicleObject setVehicleAmmoDef 0;
 
-if (typeName _savedMagazines isEqualTo "ARRAY") then
 {
-	if (typeName (_savedMagazines select 0) isEqualTo "ARRAY") then
+	private ["_turretPath", "_pylonIndex", "_magClass","_bulletAmount", "_magClass", "_maxMagAmmo", "_numMags"];
+	_turretPath = _x select 0;
+	_pylonIndex = _x select 1;
+	_magClass = _x select 2;
+	_bulletAmount = _x select 3;
+	
+	if (["120mm",_magClass] call BIS_fnc_inString || ["125mm",_magClass] call BIS_fnc_inString || ["105mm",_magClass] call BIS_fnc_inString || ["L30A1_Cannon",_magClass] call BIS_fnc_inString || ["2A46",_magClass] call BIS_fnc_inString || ["100mm",_magClass] call BIS_fnc_inString) then
 	{
+		_vehicleObject removeMagazinesTurret [_magClass, _turretPath];
+		_vehicleObject addMagazineTurret [_magClass,_turretPath,_bulletAmount];
+	} else
+	{
+		//DO THIS IF SMOKE
+		if (["smoke",_magclass] call BIS_fnc_inString) then
 		{
-			_turretPath = _x select 0;
-			for "_i" from (count _x - 1) to 1 step -1 do
+			_vehicleObject removeMagazinesTurret [_magClass, _turretPath];
+			_vehicleObject removeWeaponTurret ["SmokeLauncher", _turretPath];
+			_vehicleObject addMagazineTurret [_magClass,_turretPath,_bulletAmount];
+			_vehicleObject addWeaponTurret ["SmokeLauncher", _turretPath];
+		} else
+		{
+			//DO THIS IF CHAFF
+			if (["chaff",_magclass] call BIS_fnc_inString) then
 			{
-				_magData = _x select _i;
-				_magClass = _magData select 0;
-				_ammoCount = _magData select 1;
-				if (["120mm",_magClass] call BIS_fnc_inString || ["125mm",_magClass] call BIS_fnc_inString || ["105mm",_magClass] call BIS_fnc_inString || ["L30A1_Cannon",_magClass] call BIS_fnc_inString || ["2A46",_magClass] call BIS_fnc_inString || ["100mm",_magClass] call BIS_fnc_inString) then
+				_vehicleObject removeMagazinesTurret [_magClass, _turretPath];
+				_vehicleObject removeWeaponTurret ["CMFlareLauncher", _turretPath];
+				_vehicleObject addMagazineTurret [_magClass,_turretPath,_bulletAmount];
+				_vehicleObject addWeaponTurret ["CMFlareLauncher", _turretPath];
+			} else
+			{
+				//DO THIS IF PYLON
+				if (["pylon",_magclass] call BIS_fnc_inString) then
 				{
-					_vehicleobject addMagazineTurret [_magClass,_turretPath,_ammoCount];
-				}
-				else
+					_vehicleObject setAmmoOnPylon [_pylonIndex,_bulletAmount];
+				} else
 				{
+					//FOR EVERYTHING ELSE
 					_maxMagAmmo = (configFile >> "CfgMagazines" >> _magClass >> "count") call BIS_fnc_getCfgData;
-					_numMags = ceil (_ammoCount / _maxMagAmmo);
+					_numMags = ceil (_bulletAmount / _maxMagAmmo);
 		
 					while {_numMags > 1} do
 					{
 						_vehicleobject addMagazineTurret [_magClass, _turretPath];
 						_numMags = _numMags - 1;
-						_ammoCount = _ammoCount - _maxMagAmmo;
+						_bulletAmount = _bulletAmount - _maxMagAmmo;
 					};
-					_vehicleobject setMagazineTurretAmmo [_magClass, _ammoCount, _turretPath];			
+					_vehicleobject setMagazineTurretAmmo [_magClass, _bulletAmount, _turretPath];	
 				};
 			};
-		} forEach _savedMagazines;
+		};
 	};
-}
-else
-{
-	diag_log format["AMMO ERROR - INVALID MAGAZINE SAVED IN DATABASE: %1", _savedMagazines];
-	diag_log format["AMMO ERROR - Magazines should be saved an array. Blank entries should be: [] Verify your database."];
-};
+}forEach _savedMagazines;
 
 //End Custom Ammo Save
 _vehicleObject

@@ -1,54 +1,35 @@
-private ["_currentLoadout", "_magClass", "_turretPath", "_ammoCount", "_inserted", "_magInserted", "_magData"];
-_OK = params
-[
-	["_vehicle", objNull, [objNull]]
-];
-
-if (!_OK) exitWith
-{
-	diag_log format ["AVS Error: Calling AVS_fnc_getVehicleLoadout with invalid parameters: %1",_this];
-};
-
+private ["_pylon", "_pylonRun", "_pylonList", "_magClass", "_currentLoadout", "_turretPath", "_ammoCount", "_magDetail"];
+_vehicle = _this;
 _currentLoadout = [];
-{ // forEach magazinesAllTurrets _vehicle;
-	// [[<className>,<turretPath>,<ammoCount>,<id>,<creator>],...]
+_magDetail = magazinesAllTurrets _vehicle;
+_pylonList = getPylonMagazines _vehicle;
+_pylonRun = 1;
+{
 	_magClass = _x select 0;
 	_turretPath = _x select 1;
 	_ammoCount = _x select 2;
-
-	_inserted = false;
-	{ // forEach _currentLoadout
-		// Check if we have this _turretPath in _currentLoadout
-		if ((_x select 0) isEqualTo _turretPath) then
-		{
-			// _turretPath found in _currentLoadout
-			// Now check if we have this _magClass in this _turretPath yet.
-			_magInserted = false;
-			for "_i" from 1 to ((count _x) - 1) do
-			{
-				_magData = _x select _i;
-
-				if ((_magData select 0) isEqualTo _magClass) then
-				{
-					// _magClass found, add the ammo to it.
-					_magData set [1, ((_magData select 1) + _ammoCount)];
-					_magInserted = true;
-				};
-			};
-			if (!_magInserted) then
-			{
-				// _magClass not found, push it as a new element.
-				_x pushBack [_magClass, _ammoCount];
-			};
-			_inserted = true;
-		};
-	} forEach _currentLoadout;
-
-	if (!_inserted) then
+	_pylon = -1;
+	if (_magclass in _pylonList) then 
+	{_pylon = _pylonRun;_pylonRun = _pylonRun + 1;
+	_currentLoadout pushBack [_turretPath, _pylon, _magClass, _ammoCount];
+	} else
 	{
-		// _turretPath not found in _currentLoadout, push it as a new element.
-		_currentLoadout pushBack [_turretPath, [_magClass, _ammoCount]];
+	private ["_tempAmmo", "_inserted"];
+	_inserted = false;
+		{
+			if ((_x select 0) isEqualTo _turretPath && (_x select 2) isEqualTo _magClass) then
+			{
+				_tempAmmo = (_x select 3); 
+				_x set [3, (_tempAmmo + _ammoCount)];
+				_inserted = true;
+			};
+		} forEach _currentLoadout;
+
+		if (!_inserted) then
+		{
+			_currentLoadout pushBack [_turretPath, _pylon, _magClass, _ammoCount];
+		};
 	};
-} forEach magazinesAllTurrets _vehicle;
+} forEach _magDetail;
 
 _currentLoadout
