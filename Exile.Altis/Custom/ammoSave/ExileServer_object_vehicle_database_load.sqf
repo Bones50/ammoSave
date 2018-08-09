@@ -115,7 +115,7 @@ if (_vehicleObject call ExileClient_util_world_isInTraderZone) then
 _query = format["getVehicleAmmo:%1", _vehicleID] call ExileServer_system_database_query_selectSingle;
 _savedMagazines = _query select 0;
 
-_vehicleObject setVehicleAmmoDef 0;
+_vehicleObject setVehicleAmmo 0;
 
 {
 	private ["_turretPath", "_pylonIndex", "_magClass","_bulletAmount", "_magClass", "_maxMagAmmo", "_numMags"];
